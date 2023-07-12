@@ -2,21 +2,25 @@ from arg import getArgs
 from capture import VideoCapture
 import time
 
+camera_ids = [0, 1]
+cameras = []
+
 if __name__ == "__main__":
     args = getArgs()
-    video_capture0 = VideoCapture(prefix="test", dir="video", fps=args.fps, camera_id=0)
-    video_capture1 = VideoCapture(prefix="test", dir="video", fps=args.fps, camera_id=1)
 
-    print("camera: ", video_capture0.isOpened())
-    print("camera: ", video_capture1.isOpened())
+    for index, camera_id in enumerate(camera_ids):
+        camera = VideoCapture(
+            prefix="test", dir="video", fps=args.fps, camera_id=camera_id
+        )
+        print(f"camera {camera_id}: {camera.isOpened()}")
 
-    print("fps: ", video_capture0.get_fps())
-    print("fps: ", video_capture1.get_fps())
+        if camera.isOpened():
+            cameras.append(camera)
 
-    video_capture0.start()
-    video_capture1.start()
+    for camera in cameras:
+        camera.start()
 
     time.sleep(10)
 
-    video_capture0.stop()
-    video_capture1.stop()
+    for camera in cameras:
+        camera.stop()
