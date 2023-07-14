@@ -16,13 +16,14 @@ if __name__ == "__main__":
             process = Process(
                 target=multi_video_capture,
                 args=(
-                    "test",
-                    "video",
+                    args.prefix,
+                    args.dir,
                     args.fps,
                     args.fw,
                     args.fh,
                     int(camera_id),
                     args.recode_time,
+                    args.fourcc,
                 ),
             )
 
