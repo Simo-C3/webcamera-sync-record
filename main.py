@@ -1,26 +1,44 @@
 from arg import getArgs
 from capture import VideoCapture
+from capture_multiprocessing import multi_video_capture
 import time
-
-camera_ids = [0, 1]
-cameras = []
+from multiprocessing import Process
 
 if __name__ == "__main__":
     args = getArgs()
 
-    for index, camera_id in enumerate(camera_ids):
-        camera = VideoCapture(
-            prefix="test", dir="video", fps=args.fps, camera_id=camera_id
-        )
-        print(f"camera {camera_id}: {camera.isOpened()}")
+    camera_ids = args.cid.split(",")
+    cameras = []
+    processes = []
 
-        if camera.isOpened():
-            cameras.append(camera)
+    if args.m:
+        for index, camera_id in enumerate(camera_ids):
+            process = Process(
+                target=multi_video_capture,
+                args=("test", "video", args.fps, int(camera_id), 10),
+            )
 
-    for camera in cameras:
-        camera.start()
+            processes.append(process)
 
-    time.sleep(10)
+        for process in processes:
+            process.start()
 
-    for camera in cameras:
-        camera.stop()
+        for process in processes:
+            process.join()
+    else:
+        for index, camera_id in enumerate(camera_ids):
+            camera = VideoCapture(
+                prefix="test", dir="video", fps=args.fps, camera_id=int(camera_id)
+            )
+            print(f"camera {camera_id}: {camera.isOpened()}")
+
+            if camera.isOpened():
+                cameras.append(camera)
+
+        for camera in cameras:
+            camera.start()
+
+        time.sleep(10)
+
+        for camera in cameras:
+            camera.stop()
