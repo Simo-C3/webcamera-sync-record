@@ -1,15 +1,11 @@
 import cv2
 from datetime import datetime
-import sys
-import time
 import os
-import threading
 import platform
-from multiprocessing import Process, Value
 
 
 def multi_video_capture(
-    prefix: str, dir: str, fps: int, camera_id: int, recode_time: int
+    prefix: str, dir: str, fps: int, w: int, h: int, camera_id: int, recode_time: int
 ):
     # init
     PREFIX = prefix
@@ -26,6 +22,10 @@ def multi_video_capture(
     # set camera fps
     FPS = fps
     camera.set(cv2.CAP_PROP_FPS, FPS)
+
+    # set camera frame size
+    camera.set(cv2.CAP_PROP_FRAME_WIDTH, w)
+    camera.set(cv2.CAP_PROP_FRAME_HEIGHT, h)
 
     # get camera frame size
     CAMERA_WIDTH = int(camera.get(cv2.CAP_PROP_FRAME_WIDTH))

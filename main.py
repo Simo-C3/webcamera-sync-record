@@ -15,7 +15,15 @@ if __name__ == "__main__":
         for index, camera_id in enumerate(camera_ids):
             process = Process(
                 target=multi_video_capture,
-                args=("test", "video", args.fps, int(camera_id), 10),
+                args=(
+                    "test",
+                    "video",
+                    args.fps,
+                    args.fw,
+                    args.fh,
+                    int(camera_id),
+                    args.recode_time,
+                ),
             )
 
             processes.append(process)
